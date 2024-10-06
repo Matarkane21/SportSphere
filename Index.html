@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Blog Personnel - Résultats en Temps Réel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        header {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+        nav {
+            margin: 20px 0;
+        }
+        nav a {
+            margin: 0 15px;
+            color: #333;
+            text-decoration: none;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
+        .results {
+            background: white;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+        }
+        .results table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .results table, .results th, .results td {
+            border: 1px solid #ddd;
+        }
+        .results th, .results td {
+            padding: 8px;
+            text-align: left;
+        }
+        .results th {
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Résultats de Matchs en Temps Réel</h1>
+</header>
+
+<div class="container">
+    <section id="results" class="results">
+        <h2>Résultats en Direct</h2>
+        <table id="match-results">
+            <tr>
+                <th>Équipe A</th>
+                <th>Équipe B</th>
+                <th>Score</th>
+                <th>Date</th>
+            </tr>
+        </table>
+    </section>
+</div>
+
+<script>
+    // Fonction pour récupérer les résultats de matchs en temps réel
+    async function fetchMatchResults() {
+        const apiKey = '097f8294cf8644129e8e9c252b90b0ed'; // Remplace par ta propre clé API
+        const url = 'https://api.football-data.org/v4/matches';
+        
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'X-Auth-Token': apiKey
+            }
+        });
+        
+        const data = await response.json();
+        const matches = data.matches;
+
+        const table = document.getElementById('match-results');
+
+        matches.forEach(match => {
+            const row = table.insertRow();
+            const teamA = row.insertCell(0);
+            const teamB = row.insertCell(1);
+            const score = row.insertCell(2);
+            const date = row.insertCell(3);
+
+            teamA.innerHTML = match.homeTeam.name;
+            teamB.innerHTML = match.awayTeam.name;
+            score.innerHTML = `${match.score.fullTime.homeTeam} - ${match.score.fullTime.awayTeam}`;
+            date.innerHTML = new Date(match.utcDate).toLocaleDateString();
+        });
+    }
+
+    // Appel de la fonction lorsque la page est chargée
+    window.onload = fetchMatchResults;
+</script>
+
+</body>
+</html>
